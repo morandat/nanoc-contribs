@@ -1,8 +1,3 @@
-# All files in the 'lib' directory will be loaded
-# before nanoc starts compiling.
-#require 'nanoc/data_sources/bibtex_data_source'
-require 'nanoc/extra/vcses/git'
-
 module Nanoc::Filters
     class Code < Nanoc::Filter
         Nanoc::Filter.register '::Nanoc::Filters::Code',         :code
