@@ -26,7 +26,7 @@ module Nanoc::DataSources
           filename,
           attributes,
           identifier,
-          :binary => attributes.fetch(:binary, true), :mtime => mtime, :checksum => checksum
+          :binary => attributes.fetch("binary", true), :mtime => mtime, :checksum => checksum
         )
       end.compact
     end

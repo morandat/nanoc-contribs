@@ -56,4 +56,38 @@ module Nanoc::Helpers
     replace_tag :end_accordion do |ids, opts|
       "\n</div></div></div></div>\n"
     end
+
+    replace_tag :include do |ids, opts|
+      ids.map {|x|
+        i = @items["/#{x}/"]
+        if i == nil then
+            warn "No such item: /#{x}/"
+            ""
+        elsif i.binary? then
+          File.read(i.rep_named(opts.fetch(:rep, :default).to_sym).raw_path)
+        else
+          i.compiled_content(:rep => opts.fetch(:rep, :default).to_sym)
+        end
+      }.join("\n")
+    end
+
+    replace_tag :audio_player, :icon => '/static/wav.png' do |ids, opts|
+        Nanoc::Helpers::skip_replacement "The file attribute is required" unless opts[:file]
+        file = opts[:file]
+        icon = opts[:icon]
+        title = html_escape(ids.join(' '))
+        text = <<EOS
+<div class='media' markdown='0'>
+	<a class='pull-left' href='#{file}'><img class='media-object' src='#{icon}' alt='#{file}'></a>
+	<div class='media-body'>
+		<h4 class='media-heading'>#{title}</h4>
+        <audio controls>
+			<source src='#{file}' type='audio/x-wav'>
+			<source src='#{file}' type='audio/wav'>
+			<a src='#{file}'>#{title}</a>
+		</audio>
+    </div>
+</div>
+EOS
+    end
 end

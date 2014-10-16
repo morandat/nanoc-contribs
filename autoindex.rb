@@ -6,6 +6,8 @@
 # ai_exclude: invert extension filter
 # ai_force_title
 
+require 'pry'
+
 include Nanoc::Helpers::LinkTo
 include Nanoc::Helpers::Rendering
 #include Nanoc::Helpers::TagReplacer
@@ -13,7 +15,6 @@ include Nanoc::Helpers::Rendering
 module Nanoc::Helpers
     module AutoIndex
         def render_index(ids, opts)
-            #warn "#{@item.identifier}: Rendering AutoIndex for #{ids} with #{opts[:ai_layout]} layout."
             title = opts.key?(:ai_title) ? opts[:ai_title].to_s : item_name(@item)
             if ids.is_a? Array and ids.length > 0
                 indexes = Array.new
@@ -21,7 +22,6 @@ module Nanoc::Helpers
             else
                 indexes = Nanoc::Helpers::AutoIndex::find_children(@item, opts)
             end
-            #warn "rendering #{indexes} t:#{title} "
             render opts[:ai_layout], :title => title, :items => indexes
         end
 
@@ -32,9 +32,11 @@ module Nanoc::Helpers
             has_title = opts[:ai_force_title]
             lst = item.children
             lst = lst.select{|i| !(i[:ignored] or i[:ai_ignored])}
-            lst = lst.select{|i| !i.binary? || (exclude ^ ext.match(i[:extension]))} if ext != nil
+            lst = lst.select{|i| exclude ^ ext.match(i[:extension])} if ext != nil
             lst = lst.select{|i| !has_title or i[:title] != nil}
-            lst = lst.sort{|a,b| a[sort_key] <=> b[sort_key] rescue 0} if sort_key != nil
+            lst = lst.sort{|a, b| 
+                a[sort_key] <=> b[sort_key] rescue 0} if sort_key != nil
+            lst
         end
 
         def item_name(item)
