@@ -6,8 +6,6 @@
 # ai_exclude: invert extension filter
 # ai_force_title
 
-require 'pry'
-
 include Nanoc::Helpers::LinkTo
 include Nanoc::Helpers::Rendering
 #include Nanoc::Helpers::TagReplacer
