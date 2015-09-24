@@ -63,7 +63,7 @@ end
 
 module Nanoc::Helpers
     def self.replace_tag tag, default_opts={}, &block
-        Nanoc::Filters::TagReplacer.register_tag tag, default_opts, &block
+        Nanoc::Filters::TagReplacer.register_tag tag, default_opts, &block unless default_opts[:disabled]
     end
 
     def self.skip_replacement msg, replacement=""

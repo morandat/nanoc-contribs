@@ -37,7 +37,7 @@ module Nanoc::Filters
                   res << render(attrs[:cvs_layout], :row => row)
               end
           end
-          "<table class='table table-striped table-hover'>#{res}</table>"
+          "#{"<h2>#{attrs[:message]}</h2>" if attrs[:message]}<table class='table table-striped table-hover'>#{res}</table>"
         end
     end
 end

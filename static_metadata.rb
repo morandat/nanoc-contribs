@@ -47,7 +47,7 @@ module Nanoc::DataSources
         end
 
     def all_files_in(dir_name)
-      Nanoc::Extra::FilesystemTools.all_files_in(dir_name)
+      Nanoc::Extra::FilesystemTools.all_files_in(dir_name, nil)
     end
   end
 end
