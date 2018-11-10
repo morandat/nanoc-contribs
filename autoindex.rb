@@ -20,7 +20,7 @@ module Nanoc::Helpers
             else
                 indexes = Nanoc::Helpers::AutoIndex::find_children(@item, opts)
             end
-            render opts[:ai_layout], :title => title, :items => indexes
+            render opts[:ai_layout], title: title, items: indexes
         end
 
         def find_children(item, opts)
@@ -32,8 +32,15 @@ module Nanoc::Helpers
             lst = lst.select{|i| !(i[:ignored] or i[:ai_ignored])}
             lst = lst.select{|i| exclude ^ ext.match(i[:extension])} if ext != nil
             lst = lst.select{|i| !has_title or i[:title] != nil}
-            lst = lst.sort{|a, b| 
-                a[sort_key] <=> b[sort_key] rescue 0} if sort_key != nil
+            lst = lst.sort do |a, b|
+              begin
+                aa = a[sort_key] || 1000
+                bb = b[sort_key] || 1000
+                aa <=> bb
+              rescue
+                0
+              end
+            end if sort_key != nil
             lst
         end
 
@@ -57,7 +64,7 @@ module Nanoc::Filters
     class AutoIndex < Nanoc::Filter
 
     identifier :autoindex
-    type :text => :text
+    type text: :text
 
         def run(content, params={})
             opts = {

@@ -7,9 +7,9 @@ module Includes
 		while current_item !=  nil do
 			final_includes += current_item[:includes] if current_item[:includes] != nil
 			current_item = current_item.parent
-		end 
+		end
 		s = ''
-		final_includes.each{ |incl| 
+		final_includes.each{ |incl|
 			s << render(incl)
 		}
 		return s
