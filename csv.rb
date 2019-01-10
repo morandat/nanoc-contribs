@@ -8,11 +8,11 @@ module Nanoc::Filters
         require 'csv'
 
         def run(content, params={})
-          attrs = { :col_sep => ';', :cvs_layout => 'csv' }.merge @item.attributes
+          attrs = { :col_sep => ';', :csv_layout => 'csv' }.merge @item.attributes
 
           File.open output_filename, "w" do |res|
               CSV.foreach(content, :col_sep => ';') do |row|
-                  res.write render(attrs[:cvs_layout], :row => row)
+                  res.write render(attrs[:csv_layout], :row => row)
               end
           end
         end
@@ -26,18 +26,19 @@ module Nanoc::Filters
 
         def run(content, params={})
           attrs = { :col_sep => ';', :headers => false,
-              :cvs_layout => 'csv', :cvs_headers => 'csvheaders'
+              :csv_layout => 'csv', :csv_headers => 'csvheaders', :csv_footer => 'csvfooter',
+              :csv_id => 'csvtable', :csv_classes => 'table table-striped table-hover tablesorter'
               }.merge @item.attributes
 
           res = ''
           CSV.parse(content, :col_sep => attrs[:col_sep], :headers => attrs[:headers]) do |row|
-              if res == '' && attrs[:cvs_headers] then
-                  res << render(attrs[:cvs_headers], :row => row)
+              if res == '' && attrs[:csv_headers] then
+                  res << render(attrs[:csv_headers], :row => row)
               else
-                  res << render(attrs[:cvs_layout], :row => row)
+                  res << render(attrs[:csv_layout], :row => row)
               end
           end
-          "#{"<h2>#{attrs[:message]}</h2>" if attrs[:message]}<table class='table table-striped table-hover'>#{res}</table>"
+          "#{"<h2>#{attrs[:message]}</h2>" if attrs[:message]}<table id='#{attrs[:csv_id]}' class='#{attrs[:csv_classes]}'>#{res}</table>#{render(attrs[:csv_footer]) if attrs[:csv_footer]}"
         end
     end
 end
