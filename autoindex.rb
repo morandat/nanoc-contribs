@@ -29,9 +29,9 @@ module Nanoc::Helpers
             exclude = opts[:ai_exclude]
             has_title = opts[:ai_force_title]
             lst = item.children
-            lst = lst.select{|i| !(i[:ignored] or i[:ai_ignored])}
+            lst = lst.select{|i| !(i[:ignored] || i[:ai_ignored] || i[:ai_ignore])}
             lst = lst.select{|i| exclude ^ ext.match(i[:extension])} if ext != nil
-            lst = lst.select{|i| !has_title or i[:title] != nil}
+            lst = lst.select{|i| !has_title || i[:title] != nil}
             lst = lst.sort do |a, b|
               begin
                 aa = a[sort_key] || 1000
