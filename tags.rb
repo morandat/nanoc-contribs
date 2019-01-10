@@ -1,6 +1,12 @@
 module Nanoc::Helpers
     replace_tag :toc do |ids, opts|
-      render "toc", opts
+      next <<-HERE
+<div class='col-md-4 pull-right' markdown='1'>
+* The ToC
+{: .alert-link.alert.alert-info}
+{:toc}
+</div>
+      HERE
     end
 
     replace_tag :autoindex,
@@ -40,17 +46,49 @@ module Nanoc::Helpers
 
     replace_tag :single_accordion, class: "panel-default" do |ids, opts|
         Nanoc::Helpers::skip_replacement "One id is required" unless ids.length > 0
-      "<div class='panel-group' id='#{ids[0]}'><div class='panel #{opts[:class]}'><div class='panel-heading'><h4 class='panel-title'><a class='accordion-toggle' data-toggle='collapse' data-parent='#{'#' << ids[0]}' href='#{'#' << ids[0]}close'>#{opts[:title]}</a></h4></div><div id='#{ids[0]}close' class='panel-collapse collapse'><div class='panel-body' markdown='1'>\n"
+        text = <<EOS
+<div class='panel-group' id='#{ids[0]}'>
+    <div class='panel #{opts[:class]}'>
+        <div class='panel-heading'>
+            <h4 class='panel-title'>
+                <a class='accordion-toggle' data-toggle='collapse' data-parent='#{'#' << ids[0]}' href='#{'#' << ids[0]}close'>#{opts[:title]}</a>
+            </h4>
+        </div>
+    <div id='#{ids[0]}close' class='panel-collapse collapse'>
+        <div class='panel-body' markdown='1'>
+EOS
     end
 
     replace_tag :multi_accordion, class: "panel-default" do |ids, opts|
         Nanoc::Helpers::skip_replacement "Two ids are required (group, item)" unless ids.length > 1
-      "<div class='panel-group' id='#{ids[0]}'><div class='panel #{opts[:class]}'><div class='panel-heading'><h4 class='panel-title'><a class='accordion-toggle' data-toggle='collapse' data-parent='#{'#' << ids[0]}' href='#{'#' << ids[1]}'>#{opts[:title]}</a></h4></div><div id='#{ids[1]}' class='panel-collapse collapse'><div class='panel-body' markdown='1'>\n"
+        text = <<EOS
+<div class='panel-group' id='#{ids[0]}'>
+    <div class='panel #{opts[:class]}'>
+        <div class='panel-heading'>
+            <h4 class='panel-title'>
+                <a class='accordion-toggle' data-toggle='collapse' data-parent='#{'#' << ids[0]}' href='#{'#' << ids[1]}'>#{opts[:title]}</a>
+            </h4>
+        </div>
+        <div id='#{ids[1]}' class='panel-collapse collapse'>
+            <div class='panel-body' markdown='1'>
+EOS
     end
 
     replace_tag :accordion, class: "panel-default" do |ids, opts|
         Nanoc::Helpers::skip_replacement "Two ids are required (group, item)" unless ids.length > 1
-      "</div></div></div><div class='panel #{opts[:class]}'><div class='panel-heading'><h4 class='panel-title'><a class='accordion-toggle' data-toggle='collapse' data-parent='#{'#' << ids[0]}' href='#{'#' << ids[1]}'>#{opts[:title]}</a></h4></div><div id='#{ids[1]}' class='panel-collapse collapse'><div class='panel-body' markdown='1'>\n"
+        text = <<EOS
+            </div>
+        </div>
+    </div>
+    <div class='panel #{opts[:class]}'>
+        <div class='panel-heading'>
+            <h4 class='panel-title'>
+                <a class='accordion-toggle' data-toggle='collapse' data-parent='#{'#' << ids[0]}' href='#{'#' << ids[1]}'>#{opts[:title]}</a>
+            </h4>
+        </div>
+        <div id='#{ids[1]}' class='panel-collapse collapse'>
+            <div class='panel-body' markdown='1'>
+EOS
     end
 
     replace_tag :end_accordion do |ids, opts|
@@ -78,19 +116,18 @@ module Nanoc::Helpers
         title = html_escape(ids.join(' '))
         text = <<EOS
 <div class='media' markdown='0'>
-	<a class='pull-left' href='#{file}'><img class='media-object' src='#{icon}' alt='#{file}'></a>
-	<div class='media-body'>
-		<h4 class='media-heading'>#{title}</h4>
+    <a class='pull-left' href='#{file}'><img class='media-object' src='#{icon}' alt='#{file}'></a>
+    <div class='media-body'>
+        <h4 class='media-heading'>#{title}</h4>
         <audio controls>
-			<source src='#{file}' type='audio/x-wav'>
-			<source src='#{file}' type='audio/wav'>
-			<a src='#{file}'>#{title}</a>
-		</audio>
+            <source src='#{file}' type='audio/x-wav'>
+            <source src='#{file}' type='audio/wav'>
+            <a src='#{file}'>#{title}</a>
+        </audio>
     </div>
 </div>
 EOS
     end
-
 
     replace_tag :img, class: 'img-thumbnail', enlarge: true do |ids, opts|
         Nanoc::Helpers::skip_replacement "The file name attribute is required" unless opts[:file]
@@ -99,5 +136,9 @@ EOS
         text = "<img class='img-responsive #{opts[:class]}' src='#{file}' title='#{title}' alt='#{title}'>"
         text = "<a href='#{file}' target='_blank'>#{text}</a>" if opts[:enlarge]
         text
+    end
+
+    replace_tag :multi_col do |ids, opts|
+      "<div class>"
     end
 end
