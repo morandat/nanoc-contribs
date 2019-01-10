@@ -1,6 +1,6 @@
 module Nanoc::Helpers
     replace_tag :toc do |ids, opts|
-        render "toc", opts
+      render "toc", opts
     end
 
     replace_tag :autoindex,

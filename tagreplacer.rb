@@ -51,6 +51,7 @@ module Nanoc::Filters
         def self.register_tag(tag, default_opts={}, &block)
             @@filters[tag.to_sym] = [ block, default_opts ]
         end
+
         class ReplacementException < RuntimeError
             attr_reader :replacement
             def initialize msg, replacement = ""
