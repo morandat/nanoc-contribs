@@ -141,4 +141,21 @@ EOS
     replace_tag :multi_col do |ids, opts|
       "<div class>"
     end
+
+    replace_tag :render_dot do
+      next <<EOS
+<script>
+$(function(){
+  var viz = new Viz();
+  $('code.language-dot').each(function(){
+    var item = $(this);
+    viz.renderSVGElement($(this).text())
+    .then(function(element) {
+      item.parent().replaceWith(element);
+    });
+  });
+});
+</script>
+EOS
+    end
 end
