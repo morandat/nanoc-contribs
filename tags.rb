@@ -158,4 +158,12 @@ $(function(){
 </script>
 EOS
     end
+
+    replace_tag :toggle, class: "question-sign" do |ids, opts|
+<<EOS
+<a data-toggle="collapse" href="##{ids[0]}">
+  <span class="glyphicon glyphicon-#{opts[:class]}"/>
+</a>
+EOS
+    end
 end

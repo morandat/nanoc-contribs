@@ -25,16 +25,14 @@ module Nanoc::Filters
                 if filters.key?(tag) and (!opts.key?(:filters) or opts[:filters].include?(tag))
                     lidents = Array.new
                     lopts = Hash.new
-                    m[:val].scan PARAM_TAG do |x|
-                        if x[4].nil? and x[6].nil?
-                            lopts[x[0].to_sym] = (x[1] or x[3].gsub(/\\(.)/, "\\1"))
-                        else
-                            lidents << (x[4] or x[6].gsub(/\\(.)/, "\\1"))
-                        end
-                    end
+                    extract_tag_param m[:val], lopts, lidents
                     procedure, opts = filters[tag]
                     begin
-                        instance_exec(lidents, opts.merge(params).merge(@item.attributes).merge(lopts), &procedure)
+                        instance_exec(lidents,
+                                      opts.merge(params).
+                                        merge(@item.attributes).
+                                        merge(lopts),
+                                      &procedure)
                     rescue ReplacementException => e
                         warn "In #{@item.identifier}: #{e.message}"
                         warn ">> #{match}"
@@ -46,6 +44,16 @@ module Nanoc::Filters
                 end
             end
             content
+        end
+
+        def extract_tag_param(tag_val, lopts, lidents)
+          tag_val.scan PARAM_TAG do |x|
+            if x[4].nil? and x[6].nil?
+              lopts[x[0].to_sym] = (x[1] or x[3].gsub(/\\(.)/, "\\1"))
+            else
+              lidents << (x[4] or x[6].gsub(/\\(.)/, "\\1"))
+            end
+          end
         end
 
         def self.register_tag(tag, default_opts={}, &block)
